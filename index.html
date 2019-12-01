@@ -1,0 +1,104 @@
+<html>
+<head>
+<title>Importance-Urgency Matrix</title>
+<script src="plotly-1.51.1.min.js"></script>
+</head>
+<body>
+<script>
+'use strict';
+function addItem(e){
+  let parentelem = e.target.parentElement.parentElement;
+  if(e.keyCode == 13){
+    let div = parentelem.cloneNode(true);
+    div.childNodes[1].childNodes[1].value = '';
+    div.childNodes[3].childNodes[1].value = '';
+    div.childNodes[5].childNodes[1].value = '';
+    parentelem.after(div);
+    parentelem.nextSibling.childNodes[1].childNodes[1].focus();
+    parentelem.nextSibling.childNodes[1].childNodes[1].select();
+  }else if(e.keyCode == 8 && e.target.className == 'names' && e.target.value == '' && things.firstElementChild.childElementCount > 1){
+    console.log(things.childElementCount)
+    parentelem.previousSibling.childNodes[1].childNodes[1].focus();
+    parentelem.previousSibling.childNodes[1].childNodes[1].select();
+    parentelem.remove()
+  }
+}
+function calculate(){
+  let result = [];
+  let items = document.getElementsByClassName('items');
+  let name, importance, urgency;
+  console.log(items[0].getElementsByClassName('importance'));
+  for(let i = 0; i < items.length; i++){
+    name = items[i].getElementsByClassName('names')[0].value;
+    importance = items[i].getElementsByClassName('importance')[0].value;
+    urgency = items[i].getElementsByClassName('urgency')[0].value;
+    result.push([name, parseInt(importance), parseInt(urgency)]);
+  }
+  result.sort(cmp);
+  console.log(result);
+  document.getElementById('result_text').innerHTML = printResult(result);
+  drawResult(result);
+}
+function cmp(a, b){
+  if (a[1] === b[1]){
+    if (a[2] === b[2]){
+      return 0;
+    }else{
+      return (a[2] > b[2]) ? -1: 1;
+    }
+  }else{
+    return (a[1] > b[1]) ? -1: 1;
+  }
+}
+function printResult(result){
+  let text = 'Task: Importance, Urgency<br>';
+  for(let i=0; i<result.length; i++){
+    text = text + result[i][0] + ': ' + result[i][1].toString() + ', ' + result[i][2].toString() + '<br>';
+  }
+  return text;
+}
+function drawResult(result){
+  let fig = document.getElementById('figure');
+  let x = [];
+  let y = [];
+  let text = [];
+  for(let i=0; i<result.length; i++){
+    x.push(result[i][1]);
+    y.push(result[i][2]);
+    text.push(result[i][0]);
+  }
+  Plotly.newPlot(fig, [{
+      x: x,
+      y: y,
+      type:'scatter',
+      text: text,
+      mode:'markers+text',
+      marker:{size:12},
+      textposition:'bottom center',
+      name:'',
+      hovertemplate:'Importance: %{x}<br>Urgency: %{y}'}],
+      {hovermode:'closest', xaxis:{title:{text:'Importance'}, range:[0, 11]}, yaxis:{title:{text:'Urgency'}, range:[0, 11]}});
+}
+</script>
+<div id='controls'>
+  <button onclick='return calculate()'>Calculate</button>
+</div>
+<table id='things'>
+  <tr class='items'>
+    <td>
+      <input type='text' class='names' onkeypress='return addItem(event)' placeholder='Enter / Backspace to add / remove items'/>
+    </td>
+    <td>
+      <input type='text' class='importance' onkeypress='return addItem(event)'>
+    </td>
+    <td>
+      <input type='text' class='urgency' onkeypress='return addItem(event)'>
+    </td>
+  </tr>
+</table>
+<label id='result_text'>
+</label>
+<div id='figure'>
+</div>
+</body>
+</html>
