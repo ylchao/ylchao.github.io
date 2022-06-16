@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Stop Watch</title>
+</head>
+<body>
+<script>
+    var interval;
+    function toDateStr(t){
+        return new Date(t).toISOString().substr(11, 8);
+    }
+    function showTimer(t){
+        document.title = toDateStr(Date.now() - t);
+    }
+    function start(){
+        clearInterval(interval);
+        showTimer(Date.now());
+        interval = setInterval(showTimer, 1000, Date.now())
+    }
+    function stop(){
+        clearInterval(interval);
+    }
+</script>
+<input type="button" value="Start" onClick=start()>
+<input type="button" value="Stop" onClick=stop()>
+</body>
+</html>
