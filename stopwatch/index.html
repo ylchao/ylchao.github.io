@@ -35,14 +35,14 @@
         action.onclick = pause;
         action.value = "Pause";
     }
-    function stop(){
+    function reset(){
         clearInterval(interval);
-        showTimer(Date.now());
+        document.title = "Stop Watch";
         action.onclick = start;
         action.value = "Start";
     }
 </script>
+<input type="button" value="Reset" onClick=reset()>
 <input id="action" type="button" value="Start" onClick=start()>
-<input type="button" value="Stop" onClick=stop()>
 </body>
 </html>
