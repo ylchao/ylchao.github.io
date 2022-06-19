@@ -19,6 +19,7 @@
     }
     function stop(){
         clearInterval(interval);
+        showTimer(Date.now());
     }
 </script>
 <input type="button" value="Start" onClick=start()>
