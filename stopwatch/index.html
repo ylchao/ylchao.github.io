@@ -6,22 +6,43 @@
 <body>
 <script>
     var interval;
+    var starttime, pausetime, duration;
     function toDateStr(t){
         return new Date(t).toISOString().substr(11, 8);
     }
     function showTimer(t){
-        document.title = toDateStr(Date.now() - t);
+        pausetime = Date.now();
+        document.title = toDateStr(pausetime-t);
     }
     function start(){
         clearInterval(interval);
-        showTimer(Date.now());
-        interval = setInterval(showTimer, 1000, Date.now())
+        starttime = Date.now();
+        duration = 0;
+        showTimer(starttime);
+        interval = setInterval(showTimer, 1000, starttime);
+        action.onclick = pause;
+        action.value = "Pause";
     }
-    function stop(){
+    function pause(){
+        duration = duration + pausetime - starttime;
         clearInterval(interval);
+        action.onclick = resume;
+        action.value = "Resume";
+    }
+    function resume(){
+        starttime = Date.now();
+        interval = setInterval(showTimer, 1000, Date.now()-duration);
+        action.onclick = pause;
+        action.value = "Pause";
+    }
+    function reset(){
+        clearInterval(interval);
+        document.title = "Stop Watch";
+        action.onclick = start;
+        action.value = "Start";
     }
 </script>
-<input type="button" value="Start" onClick=start()>
-<input type="button" value="Stop" onClick=stop()>
+<input type="button" value="Reset" onClick=reset()>
+<input id="action" type="button" value="Start" onClick=start()>
 </body>
 </html>
