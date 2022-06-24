@@ -1,0 +1,42 @@
+<html>
+<head>
+    <title>Draw</title>
+    <style>
+    *{
+        margin: 0;
+        padding: 0;
+    }
+    </style>
+</head>
+<body>
+    <canvas id="canvas"></canvas>
+    <script>
+        const canvas = document.getElementById("canvas");
+        canvas.height = window.innerHeight;
+        canvas.width = window.innerWidth;
+        const ctx = canvas.getContext("2d");
+        ctx.lineWidth = 5;
+
+        let pX = null;
+        let pY = null;
+        let isDrawing = false;
+
+        window.addEventListener("mouseup", (e) => isDrawing = false);
+        window.addEventListener("mousedown", (e) => isDrawing = true);
+
+        window.addEventListener("mousemove", (e) => {
+            if (!isDrawing || pX == null || pY == null) {
+                pX = e.clientX;
+                pY = e.clientY;
+                return;
+            }
+            ctx.beginPath();
+            ctx.moveTo(pX, pY);
+            ctx.lineTo(e.clientX, e.clientY);
+            ctx.stroke();
+            pX = e.clientX;
+            pY = e.clientY;
+        })
+    </script>
+</body>
+</html>
