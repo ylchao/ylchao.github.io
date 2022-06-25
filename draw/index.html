@@ -21,12 +21,14 @@
         let pY = null;
         let isDrawing = false;
 
-        window.addEventListener("mousedown", (e) => isDrawing = true);
+        window.addEventListener("mousedown", (e) => {
+            isDrawing = true;
+            pX = e.clientX;
+            pY = e.clientY;
+        });
         window.addEventListener("mouseup", (e) => isDrawing = false);
         window.addEventListener("mousemove", (e) => {
-            if (!isDrawing || pX == null || pY == null) {
-                pX = e.clientX;
-                pY = e.clientY;
+            if (!isDrawing) {
                 return;
             }
             ctx.beginPath();
