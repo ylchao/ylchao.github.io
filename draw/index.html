@@ -19,6 +19,8 @@
         let pX = null;
         let pY = null;
         let isDrawing = false;
+        let history = [];
+        let stroke = [];
 
         window.addEventListener("load", () => {
             canvas.height = window.innerHeight;
@@ -30,8 +32,13 @@
             isDrawing = true;
             pX = e.clientX;
             pY = e.clientY;
+            stroke.push([pX, pY]);
         });
-        window.addEventListener("mouseup", (e) => isDrawing = false);
+        window.addEventListener("mouseup", (e) => {
+            isDrawing = false;
+            history.push(stroke);
+            stroke = [];
+        });
         window.addEventListener("mousemove", (e) => {
             if (!isDrawing) {
                 return;
@@ -42,13 +49,19 @@
             ctx.stroke();
             pX = e.clientX;
             pY = e.clientY;
-        })
+            stroke.push([pX, pY]);
+        });
         window.addEventListener("touchstart", (e) => {
             isDrawing = true;
             pX = e.touches[0].clientX;
             pY = e.touches[0].clientY;
+            stroke.push([pX, pY]);
         });
-        window.addEventListener("touchend", (e) => isDrawing = false);
+        window.addEventListener("touchend", (e) => {
+            isDrawing = false;
+            history.push(stroke);
+            stroke = [];
+        });
         window.addEventListener("touchmove", (e) => {
             if (!isDrawing) {
                 return;
@@ -59,7 +72,22 @@
             ctx.stroke();
             pX = e.touches[0].clientX;
             pY = e.touches[0].clientY;
-        })
+            stroke.push([pX, pY]);
+        });
+        window.addEventListener("keydown", (e) => {
+            if (e.ctrlKey && e.key === 'z'){
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                for (let i = 0; i < history.length-1; i++) {
+                    for (let j = 1; j < history[i].length; j++) {
+                        ctx.moveTo(history[i][j-1][0], history[i][j-1][1]);
+                        ctx.lineTo(history[i][j][0], history[i][j][1]);
+                        ctx.stroke();
+                    }
+                }
+                history.pop();
+            }
+        });
     </script>
 </body>
 </html>
