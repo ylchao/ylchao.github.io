@@ -5,6 +5,9 @@
     *{
         margin: 0;
         padding: 0;
+        height: 100%;
+        overflow: hidden;
+        color: white;
     }
     </style>
 </head>
@@ -12,14 +15,16 @@
     <canvas id="canvas"></canvas>
     <script>
         const canvas = document.getElementById("canvas");
-        canvas.height = window.innerHeight;
-        canvas.width = window.innerWidth;
         const ctx = canvas.getContext("2d");
-        ctx.lineWidth = 5;
-
         let pX = null;
         let pY = null;
         let isDrawing = false;
+
+        window.addEventListener("load", () => {
+            canvas.height = window.innerHeight;
+            canvas.width = window.innerWidth;
+            ctx.lineWidth = 5;
+        });
 
         window.addEventListener("mousedown", (e) => {
             isDrawing = true;
