@@ -21,6 +21,7 @@
         let isDrawing = false;
         let history = [];
         let stroke = [];
+        let history_length = 0;
 
         window.addEventListener("load", () => {
             canvas.height = window.innerHeight;
@@ -30,6 +31,7 @@
 
         window.addEventListener("mousedown", (e) => {
             isDrawing = true;
+            history.length = history_length;
             pX = e.clientX;
             pY = e.clientY;
             stroke.push([pX, pY]);
@@ -37,6 +39,7 @@
         window.addEventListener("mouseup", (e) => {
             isDrawing = false;
             history.push(stroke);
+            history_length++;
             stroke = [];
         });
         window.addEventListener("mousemove", (e) => {
@@ -53,6 +56,7 @@
         });
         window.addEventListener("touchstart", (e) => {
             isDrawing = true;
+            history.length = history_length;
             pX = e.touches[0].clientX;
             pY = e.touches[0].clientY;
             stroke.push([pX, pY]);
@@ -60,6 +64,7 @@
         window.addEventListener("touchend", (e) => {
             isDrawing = false;
             history.push(stroke);
+            history_length++;
             stroke = [];
         });
         window.addEventListener("touchmove", (e) => {
@@ -76,16 +81,33 @@
         });
         window.addEventListener("keydown", (e) => {
             if (e.ctrlKey && e.key === 'z'){
+                if (history_length == 0){
+                    return;
+                }
                 ctx.clearRect(0, 0, canvas.width, canvas.height);
                 ctx.beginPath();
-                for (let i = 0; i < history.length-1; i++) {
+                for (let i = 0; i < history_length-1; i++) {
                     for (let j = 1; j < history[i].length; j++) {
                         ctx.moveTo(history[i][j-1][0], history[i][j-1][1]);
                         ctx.lineTo(history[i][j][0], history[i][j][1]);
                         ctx.stroke();
                     }
                 }
-                history.pop();
+                history_length--;
+            } else if (e.ctrlKey && e.key === 'r'){
+                if (history.length == history_length){
+                    return;
+                }
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                ctx.beginPath();
+                for (let i = 0; i < history_length+1; i++) {
+                    for (let j = 1; j < history[i].length; j++) {
+                        ctx.moveTo(history[i][j-1][0], history[i][j-1][1]);
+                        ctx.lineTo(history[i][j][0], history[i][j][1]);
+                        ctx.stroke();
+                    }
+                }
+                history_length++;
             }
         });
     </script>
