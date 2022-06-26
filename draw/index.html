@@ -23,90 +23,68 @@
         let stroke = [];
         let history_length = 0;
 
-        window.addEventListener("load", () => {
+        function init() {
             canvas.height = window.innerHeight;
             canvas.width = window.innerWidth;
             ctx.lineWidth = 5;
-        });
+        }
+        function draw_stroke(startX, startY, endX, endY) {
+            ctx.moveTo(startX, startY);
+            ctx.lineTo(endX, endY);
+            ctx.stroke();
+        }
+        function start_stoke(newX, newY) {
+            isDrawing = true;
+            history.length = history_length;
+            pX = newX;
+            pY = newY;
+            stroke.push([pX, pY]);
+        }
+        function stop_stoke() {
+            isDrawing = false;
+            history.push(stroke);
+            history_length++;
+            stroke = [];
+        }
+        function move_stroke(newX, newY) {
+            if (!isDrawing) {
+                return;
+            }
+            ctx.beginPath();
+            draw_stroke(pX, pY, newX, newY);
+            pX = newX;
+            pY = newY;
+            stroke.push([pX, pY]);
+        }
+        function redraw(num_strokes) {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            for (let i = 0; i < num_strokes; i++) {
+                for (let j = 1; j < history[i].length; j++) {
+                    draw_stroke(history[i][j-1][0], history[i][j-1][1], history[i][j][0], history[i][j][1]);
+                }
+            }
+        }
 
-        window.addEventListener("mousedown", (e) => {
-            isDrawing = true;
-            history.length = history_length;
-            pX = e.clientX;
-            pY = e.clientY;
-            stroke.push([pX, pY]);
-        });
-        window.addEventListener("mouseup", (e) => {
-            isDrawing = false;
-            history.push(stroke);
-            history_length++;
-            stroke = [];
-        });
-        window.addEventListener("mousemove", (e) => {
-            if (!isDrawing) {
-                return;
-            }
-            ctx.beginPath();
-            ctx.moveTo(pX, pY);
-            ctx.lineTo(e.clientX, e.clientY);
-            ctx.stroke();
-            pX = e.clientX;
-            pY = e.clientY;
-            stroke.push([pX, pY]);
-        });
-        window.addEventListener("touchstart", (e) => {
-            isDrawing = true;
-            history.length = history_length;
-            pX = e.touches[0].clientX;
-            pY = e.touches[0].clientY;
-            stroke.push([pX, pY]);
-        });
-        window.addEventListener("touchend", (e) => {
-            isDrawing = false;
-            history.push(stroke);
-            history_length++;
-            stroke = [];
-        });
-        window.addEventListener("touchmove", (e) => {
-            if (!isDrawing) {
-                return;
-            }
-            ctx.beginPath();
-            ctx.moveTo(pX, pY);
-            ctx.lineTo(e.touches[0].clientX, e.touches[0].clientY);
-            ctx.stroke();
-            pX = e.touches[0].clientX;
-            pY = e.touches[0].clientY;
-            stroke.push([pX, pY]);
-        });
+        window.addEventListener("load", () => {init()});
+        window.addEventListener("mousedown", (e) => {start_stoke(e.clientX, e.clientY)});
+        window.addEventListener("mouseup", () => {stop_stoke()});
+        window.addEventListener("mousemove", (e) => {move_stroke(e.clientX, e.clientY)});
+        window.addEventListener("touchstart", (e) => {start_stoke(e.touches[0].clientX, e.touches[0].clientY)});
+        window.addEventListener("touchend", () => {stop_stoke()});
+        window.addEventListener("touchmove", (e) => {move_stroke(e.touches[0].clientX, e.touches[0].clientY)});
         window.addEventListener("keydown", (e) => {
             if (e.ctrlKey && e.key === 'z'){
                 if (history_length == 0){
                     return;
                 }
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.beginPath();
-                for (let i = 0; i < history_length-1; i++) {
-                    for (let j = 1; j < history[i].length; j++) {
-                        ctx.moveTo(history[i][j-1][0], history[i][j-1][1]);
-                        ctx.lineTo(history[i][j][0], history[i][j][1]);
-                        ctx.stroke();
-                    }
-                }
+                redraw(history_length-1);
                 history_length--;
             } else if (e.ctrlKey && e.key === 'r'){
                 if (history.length == history_length){
                     return;
                 }
-                ctx.clearRect(0, 0, canvas.width, canvas.height);
-                ctx.beginPath();
-                for (let i = 0; i < history_length+1; i++) {
-                    for (let j = 1; j < history[i].length; j++) {
-                        ctx.moveTo(history[i][j-1][0], history[i][j-1][1]);
-                        ctx.lineTo(history[i][j][0], history[i][j][1]);
-                        ctx.stroke();
-                    }
-                }
+                redraw(history_length+1);
                 history_length++;
             }
         });
