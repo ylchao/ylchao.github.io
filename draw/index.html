@@ -9,18 +9,42 @@
         overflow: hidden;
         color: white;
     }
+    #canvas {
+        position: absolute;
+        margin-bottom: 5%;
+    }
     #toolbar {
-        height: 25px;
+        height: 5%;
         background-color: #202020;
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+    }
+    #controls {
+        display: flex;
+        flex-direction: row;
+        position: absolute;
+        margin: 0;
+        left: 5%;
+        top: 50%;
+        height: 80%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+    button {
+        color: black;
+        min-width: 50px;
     }
     </style>
 </head>
 <body>
-    <div id="toolbar">
-        <button onclick=undo()><=</button>
-        <button onclick=redo()>=></button>
-    </div>
     <canvas id="canvas"></canvas>
+    <div id="toolbar">
+        <div id="controls">
+            <button onclick=undo()><==</button>&nbsp;&nbsp;
+            <button onclick=redo()>==></button>
+        </div>
+    </div>
     <script>
         const canvas = document.getElementById("canvas");
         const ctx = canvas.getContext("2d");
@@ -89,12 +113,12 @@
         }
 
         window.addEventListener("load", () => {init()});
-        window.addEventListener("mousedown", (e) => {start_stoke(e.clientX, e.clientY)});
-        window.addEventListener("mouseup", () => {stop_stoke()});
-        window.addEventListener("mousemove", (e) => {move_stroke(e.clientX, e.clientY)});
-        window.addEventListener("touchstart", (e) => {start_stoke(e.touches[0].clientX, e.touches[0].clientY)});
-        window.addEventListener("touchend", () => {stop_stoke()});
-        window.addEventListener("touchmove", (e) => {move_stroke(e.touches[0].clientX, e.touches[0].clientY)});
+        canvas.addEventListener("mousedown", (e) => {start_stoke(e.clientX, e.clientY)});
+        canvas.addEventListener("mouseup", () => {stop_stoke()});
+        canvas.addEventListener("mousemove", (e) => {move_stroke(e.clientX, e.clientY)});
+        canvas.addEventListener("touchstart", (e) => {start_stoke(e.touches[0].clientX, e.touches[0].clientY)});
+        canvas.addEventListener("touchend", () => {stop_stoke()});
+        canvas.addEventListener("touchmove", (e) => {move_stroke(e.touches[0].clientX, e.touches[0].clientY)});
         window.addEventListener("keydown", (e) => {
             if (e.ctrlKey && e.key === 'z'){
                 undo();
