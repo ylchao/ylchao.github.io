@@ -20,6 +20,9 @@
         width: 100%;
         bottom: 0;
     }
+    .spacer {
+        min-width: 10px;
+    }
     #controls {
         display: flex;
         flex-direction: row;
@@ -35,14 +38,60 @@
         color: black;
         min-width: 50px;
     }
+    #palette {
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+    .color{
+        height: 67%;
+        width: 67%;
+        position: relative;
+        top: 10%;
+        aspect-ratio: 1/1;
+        background-color: black;
+        border-radius: 50%;
+        border: 2px solid white;
+        transition: transform .1s;
+    }
+    .color:hover{
+        transform: scale(1.15);
+    }
+    .color:nth-child(2){
+        border: 2px solid orange;
+        background-color: black;
+    }
+    .color:nth-child(4){
+        background-color: red;
+    }
+    .color:nth-child(6){
+        background-color: green;
+    }
+    .color:nth-child(8){
+        background-color: blue;
+    }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
     <div id="toolbar">
         <div id="controls">
-            <button onclick=undo()><==</button>&nbsp;&nbsp;
-            <button onclick=redo()>==></button>
+            <button onclick=undo()><==</button><div class="spacer"></div>
+            <button onclick=redo()>==></button><div class="spacer"></div>
+            <div id="palette">
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+            </div>
         </div>
     </div>
     <script>
@@ -56,6 +105,16 @@
         let history = [];
         let stroke = [];
         let history_length = 0;
+        let colors = document.querySelectorAll(".color");
+
+        colors = Array.from(colors);
+        colors.forEach(color => {
+            color.addEventListener("click", () => {
+                ctx.strokeStyle = window.getComputedStyle(color).backgroundColor;
+                colors.forEach(c => {c.style.border = "2px solid white"});
+                color.style.border = "2px solid orange";
+            });
+        });
 
         function init() {
             DPR = window.devicePixelRatio;
@@ -80,7 +139,7 @@
         }
         function stop_stoke() {
             isDrawing = false;
-            history.push(stroke);
+            history.push({'color': ctx.strokeStyle, 'stroke': stroke});
             history_length++;
             stroke = [];
         }
@@ -95,13 +154,16 @@
             stroke.push([pX, pY]);
         }
         function redraw(num_strokes) {
+            current_color = ctx.strokeStyle;
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight - toolbar.offsetHeight);
             for (let i = 0; i < num_strokes; i++) {
-                for (let j = 1; j < history[i].length; j++) {
+                ctx.strokeStyle = history[i]['color'];
+                for (let j = 1; j < history[i]['stroke'].length; j++) {
                     ctx.beginPath();
-                    draw_stroke(history[i][j-1][0], history[i][j-1][1], history[i][j][0], history[i][j][1]);
+                    draw_stroke(history[i]['stroke'][j-1][0], history[i]['stroke'][j-1][1], history[i]['stroke'][j][0], history[i]['stroke'][j][1]);
                 }
             }
+            ctx.strokeStyle = current_color;
         }
         function undo() {
             if (history_length == 0){
