@@ -47,7 +47,9 @@
     </div>
     <script>
         const canvas = document.getElementById("canvas");
+        const toolbar = document.getElementById("toolbar");
         const ctx = canvas.getContext("2d");
+        let DPR = 1;
         let pX = null;
         let pY = null;
         let isDrawing = false;
@@ -56,8 +58,12 @@
         let history_length = 0;
 
         function init() {
-            canvas.height = window.innerHeight;
-            canvas.width = window.innerWidth;
+            DPR = window.devicePixelRatio;
+            canvas.height = Math.floor((window.innerHeight - toolbar.offsetHeight) / DPR);
+            canvas.width = Math.floor(window.innerWidth / DPR);
+            ctx.scale(1/DPR, 1/DPR);
+            canvas.style.height = window.innerHeight - toolbar.offsetHeight + 1 + 'px'; // plus 1 to remove the empty row
+            canvas.style.width = window.innerWidth + 'px';
             ctx.lineWidth = 5;
         }
         function draw_stroke(startX, startY, endX, endY) {
@@ -89,10 +95,10 @@
             stroke.push([pX, pY]);
         }
         function redraw(num_strokes) {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.beginPath();
+            ctx.clearRect(0, 0, window.innerWidth, window.innerHeight - toolbar.offsetHeight);
             for (let i = 0; i < num_strokes; i++) {
                 for (let j = 1; j < history[i].length; j++) {
+                    ctx.beginPath();
                     draw_stroke(history[i][j-1][0], history[i][j-1][1], history[i][j][0], history[i][j][1]);
                 }
             }
