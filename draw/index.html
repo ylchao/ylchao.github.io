@@ -20,6 +20,9 @@
         width: 100%;
         bottom: 0;
     }
+    .spacer {
+        min-width: 10px;
+    }
     #controls {
         display: flex;
         flex-direction: row;
@@ -35,14 +38,59 @@
         color: black;
         min-width: 50px;
     }
+    #palette {
+        display: flex;
+        flex-direction: row;
+        position: relative;
+        top: 50%;
+        -ms-transform: translateY(-50%);
+        transform: translateY(-50%);
+    }
+    .color{
+        height: 67%;
+        width: 67%;
+        position: relative;
+        top: 10%;
+        aspect-ratio: 1/1;
+        background-color: black;
+        border-radius: 50%;
+        border: 2px solid white;
+        transition: transform .1s;
+    }
+    .color:hover{
+        transform: scale(1.15);
+    }
+    .color:nth-child(2){
+        background-color: black;
+    }
+    .color:nth-child(4){
+        background-color: red;
+    }
+    .color:nth-child(6){
+        background-color: green;
+    }
+    .color:nth-child(8){
+        background-color: blue;
+    }
     </style>
 </head>
 <body>
     <canvas id="canvas"></canvas>
     <div id="toolbar">
         <div id="controls">
-            <button onclick=undo()><==</button>&nbsp;&nbsp;
-            <button onclick=redo()>==></button>
+            <button onclick=undo()><==</button><div class="spacer"></div>
+            <button onclick=redo()>==></button><div class="spacer"></div>
+            <div id="palette">
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+                <div class="color"></div>
+                <div class="spacer"></div>
+            </div>
         </div>
     </div>
     <script>
