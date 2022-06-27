@@ -104,6 +104,12 @@
         let history = [];
         let stroke = [];
         let history_length = 0;
+        let colors = document.querySelectorAll(".color");
+
+        colors = Array.from(colors);
+        colors.forEach(color => {
+            color.addEventListener("click", () => {ctx.strokeStyle = window.getComputedStyle(color).backgroundColor});
+        });
 
         function init() {
             DPR = window.devicePixelRatio;
