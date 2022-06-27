@@ -134,7 +134,7 @@
         }
         function stop_stoke() {
             isDrawing = false;
-            history.push(stroke);
+            history.push({'color': ctx.strokeStyle, 'stroke': stroke});
             history_length++;
             stroke = [];
         }
@@ -149,13 +149,16 @@
             stroke.push([pX, pY]);
         }
         function redraw(num_strokes) {
+            current_color = ctx.strokeStyle;
             ctx.clearRect(0, 0, window.innerWidth, window.innerHeight - toolbar.offsetHeight);
             for (let i = 0; i < num_strokes; i++) {
-                for (let j = 1; j < history[i].length; j++) {
+                ctx.strokeStyle = history[i]['color'];
+                for (let j = 1; j < history[i]['stroke'].length; j++) {
                     ctx.beginPath();
-                    draw_stroke(history[i][j-1][0], history[i][j-1][1], history[i][j][0], history[i][j][1]);
+                    draw_stroke(history[i]['stroke'][j-1][0], history[i]['stroke'][j-1][1], history[i]['stroke'][j][0], history[i]['stroke'][j][1]);
                 }
             }
+            ctx.strokeStyle = current_color;
         }
         function undo() {
             if (history_length == 0){
