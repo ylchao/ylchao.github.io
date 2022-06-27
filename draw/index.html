@@ -61,6 +61,7 @@
         transform: scale(1.15);
     }
     .color:nth-child(2){
+        border: 2px solid orange;
         background-color: black;
     }
     .color:nth-child(4){
@@ -108,7 +109,11 @@
 
         colors = Array.from(colors);
         colors.forEach(color => {
-            color.addEventListener("click", () => {ctx.strokeStyle = window.getComputedStyle(color).backgroundColor});
+            color.addEventListener("click", () => {
+                ctx.strokeStyle = window.getComputedStyle(color).backgroundColor;
+                colors.forEach(c => {c.style.border = "2px solid white"});
+                color.style.border = "2px solid orange";
+            });
         });
 
         function init() {
