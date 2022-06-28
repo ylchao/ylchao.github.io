@@ -46,32 +46,19 @@
         -ms-transform: translateY(-50%);
         transform: translateY(-50%);
     }
-    .color{
+    #color {
         height: 67%;
         width: 67%;
         position: relative;
-        top: 10%;
+        top: 15%;
         aspect-ratio: 1/1;
         background-color: black;
         border-radius: 50%;
-        border: 2px solid white;
+        border: 2px solid Beige;
         transition: transform .1s;
     }
-    .color:hover{
+    #color:hover {
         transform: scale(1.15);
-    }
-    .color:nth-child(2){
-        border: 2px solid orange;
-        background-color: black;
-    }
-    .color:nth-child(4){
-        background-color: red;
-    }
-    .color:nth-child(6){
-        background-color: green;
-    }
-    .color:nth-child(8){
-        background-color: blue;
     }
     </style>
 </head>
@@ -83,13 +70,7 @@
             <button title="redo (ctrl+r)" onclick=redo()>==></button><div class="spacer"></div>
             <div id="palette">
                 <div class="spacer"></div>
-                <div class="color"></div>
-                <div class="spacer"></div>
-                <div class="color"></div>
-                <div class="spacer"></div>
-                <div class="color"></div>
-                <div class="spacer"></div>
-                <div class="color"></div>
+                <input id="color" type="color" value="black"></input>
                 <div class="spacer"></div>
             </div>
         </div>
@@ -97,6 +78,7 @@
     <script>
         const canvas = document.getElementById("canvas");
         const toolbar = document.getElementById("toolbar");
+        const color = document.getElementById("color");
         const ctx = canvas.getContext("2d");
         let DPR = 1;
         let pX = null;
@@ -105,16 +87,6 @@
         let history = [];
         let stroke = [];
         let history_length = 0;
-        let colors = document.querySelectorAll(".color");
-
-        colors = Array.from(colors);
-        colors.forEach(color => {
-            color.addEventListener("click", () => {
-                ctx.strokeStyle = window.getComputedStyle(color).backgroundColor;
-                colors.forEach(c => {c.style.border = "2px solid white"});
-                color.style.border = "2px solid orange";
-            });
-        });
 
         function init() {
             DPR = window.devicePixelRatio;
@@ -194,6 +166,11 @@
                 redo();
             }
         });
+        color.addEventListener("change", () => {
+            color.style.backgroundColor = color.value;
+            ctx.strokeStyle = color.value;
+        });
+
     </script>
 </body>
 </html>
