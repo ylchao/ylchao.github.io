@@ -1,0 +1,28 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<title>Write Graph</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+<textarea id="graph_input" rows="10" cols="50" onchange=changeGraph()>
+graph LR
+    A --- B
+    B-->C[hello]
+    B-->D(world)
+</textarea>
+<div class="mermaid" id="graph_canvas">
+</div>
+<script>
+    const graph_canvas = document.getElementById('graph_canvas');
+    const graph_input = document.getElementById('graph_input');
+    graph_canvas.innerHTML = graph_input.value;
+    mermaid.initialize({startOnLoad:true});
+
+    function changeGraph() {
+        mermaid.render('preparedScheme', graph_input.value,
+                function(code) {graph_canvas.innerHTML = code});
+    }
+</script>
+</body>
+</html>
